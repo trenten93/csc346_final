@@ -20,10 +20,10 @@
       <Pane fx:id="mainPane" prefHeight="513.0" prefWidth="577.0">
          <children>
             <Label layoutX="44.0" layoutY="55.0" prefHeight="24.0" prefWidth="61.0" text="Zip Code: " />
-            <TextField fx:id="zipEnter" layoutX="123.0" layoutY="55.0" />
-            <Button fx:id="run" layoutX="330.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="89.0" text="Run" />
+            <TextField fx:id="zipEnter" layoutX="123.0" layoutY="55.0" onKeyReleased="#zipKeyReleased" />
+            <Button fx:id="run" layoutX="330.0" layoutY="55.0" mnemonicParsing="false" onAction="#mainRun" prefHeight="25.0" prefWidth="89.0" text="Run" />
             <TextArea fx:id="output" editable="false" layoutX="14.0" layoutY="103.0" prefHeight="369.0" prefWidth="407.0" />
-            <Hyperlink fx:id="mapLink" layoutX="451.0" layoutY="111.0" prefHeight="37.0" prefWidth="89.0" text="Crime Map" />
+            <Hyperlink fx:id="mapLink" layoutX="451.0" layoutY="111.0" onAction="#linkClick" prefHeight="37.0" prefWidth="89.0" text="Crime Map" />
          </children>
       </Pane>
    </children>

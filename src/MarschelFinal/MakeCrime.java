@@ -21,6 +21,15 @@ public class MakeCrime {
     public static void makeMap() throws Exception{
         populateColorWheel();
 
+        try {
+            File fileTest = new File("outputMap.svg");
+            if(fileTest.exists()){
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         String originalSvgSource = readFileSource("usCountiesOriginal.svg");
         Document originalSvg = Jsoup.parse(originalSvgSource,"", Parser.xmlParser());
 
@@ -114,6 +123,7 @@ public class MakeCrime {
                 data.setPropertyCrime(parseInt(property_crime));
                 data.setStateId(stateAbb);
                 data.setStateFull(countyStateFull[1]);
+                data.setCountyName(countyStateFull[0]);
 
             }
             rs.close();
