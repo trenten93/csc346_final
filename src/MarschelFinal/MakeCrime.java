@@ -24,7 +24,7 @@ public class MakeCrime {
         try {
             File fileTest = new File("outputMap.svg");
             if(fileTest.exists()){
-                return;
+                //return;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,17 +87,17 @@ public class MakeCrime {
     }
 
     public static String findColorForPop(CountyDataGeneral countyData,CountyCrimeData countyCrime,String fips){// for total crime
-        // determines what color to use based on the ratio of total crime to population.
+        // determines what color to use based on the ratio of total crime to population. //per 10000 people
         String result = "";
 
         if(countyCrime.getTotalCrime() == 0 || countyData.getPopulation() ==0){
             result = colorWheel.get(0);
         }else{
             double crimeRate = (double)countyCrime.getTotalCrime()/ (double)countyData.getPopulation();
-            double colorPicker = (crimeRate*100)*0.10;
+            double colorPicker = (crimeRate*1000)*0.05;
             int finalCodeToGet = (int) Math.round(colorPicker);
-            if(finalCodeToGet > 10){
-                finalCodeToGet = 9;
+            if(finalCodeToGet > 5){
+                finalCodeToGet = 4;
             }
             result = colorWheel.get(finalCodeToGet);
         }
