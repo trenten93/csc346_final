@@ -119,7 +119,7 @@ public class MakeCrime {
             rs.close();
             stmt.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            data.setCountyName("null");
         }
         closeDB(conn);
 
