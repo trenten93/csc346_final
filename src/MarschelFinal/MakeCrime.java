@@ -57,7 +57,7 @@ public class MakeCrime {
                 CountyCrimeData countyCrime = readCountyCrimeData(countyData.getCountyName(),countyData.getStateId());
 
                 if(countyCrime.getCountyName().equalsIgnoreCase("")){
-                    path.attr("style",formatStyle("#000000"));
+                    path.attr("style",formatStyle("#fe8181"));
                 }else{
                     String colorCode = findColorForPop(countyData,countyCrime,fips);
                     path.attr("style",formatStyle(colorCode));
@@ -87,7 +87,7 @@ public class MakeCrime {
     }
 
     public static String findColorForPop(CountyDataGeneral countyData,CountyCrimeData countyCrime,String fips){// for total crime
-        // determines what color to use based on the ratio of total crime to population. //per 10000 people
+        // determines what color to use based on the ratio of total crime to population. //per 1,000 people
         String result = "";
 
         if(countyCrime.getTotalCrime() == 0 || countyData.getPopulation() ==0){
