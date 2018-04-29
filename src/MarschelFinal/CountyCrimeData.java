@@ -7,6 +7,7 @@ public class CountyCrimeData {
     public int totalCrime;
     public String stateId;
     public String stateFull;
+    public int population = 0;// remove later
 
 
     public CountyCrimeData(){
@@ -67,4 +68,14 @@ public class CountyCrimeData {
     public void setStateFull(String stateFull) {
         this.stateFull = stateFull;
     }
+
+    public void setPopulation(int population){
+        this.population = population;
+    }
+
+    public int getPopulation(){
+        return this.population;
+    }
+
+
 }

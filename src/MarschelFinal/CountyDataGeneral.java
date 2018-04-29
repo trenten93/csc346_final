@@ -5,14 +5,13 @@ public class CountyDataGeneral {
     public String stateName;
     public String fips;
     public String countyName;
-    public int population;
+    public int population=0;
 
     public CountyDataGeneral(){
         this.stateId ="";
         this.stateName = "";
         this.fips = "";
         this.countyName = "";
-        this.population = 0;
     }
 
     public String getStateId() {
@@ -51,7 +50,7 @@ public class CountyDataGeneral {
         return population;
     }
 
-    public void addPopulation(int population) {
-        this.population = this.population + population;
+    public void setPopulation(int population) {
+        this.population = population;
     }
 }

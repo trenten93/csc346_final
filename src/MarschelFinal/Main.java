@@ -3,8 +3,7 @@ package MarschelFinal;
 
 // This program uses totals from COUNTY offices ONLY to produce a map in an xml format that shows the rate of crime
 // per 1000 people and shades in the counties in the map from lighter ,less crime to brighter red for more crime per 1000
-// people. It also allows the user to enter a zip code to get the results for their county. If I were given more time,
-// I would have built the database of totals from county and city report and had a more complete map.
+// people. It also allows the user to enter a zip code to get the results for their county.
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
