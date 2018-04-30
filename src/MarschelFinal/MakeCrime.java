@@ -1,6 +1,7 @@
 package MarschelFinal;
 
 
+import javafx.scene.control.ProgressBar;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,6 +18,9 @@ import java.util.Scanner;
 @SuppressWarnings("Duplicates")
 public class MakeCrime {
     public static ArrayList<String> colorWheel = new ArrayList<String>();
+    public static String originalSvgSource= "";
+    public static Document originalSvg = null;
+
 
     public MakeCrime(){
         //
@@ -25,35 +29,27 @@ public class MakeCrime {
 
     public static void makeMap(int o) throws Exception{
         populateColorWheel();
-
         if(o == 1){
+            ProgressTest.progressBar.setProgress(1.0);
             return;
         }
+    }
 
 
-        String originalSvgSource = readFileSource("usCountiesOriginal.svg");
-        Document originalSvg = Jsoup.parse(originalSvgSource,"", Parser.xmlParser());
+    public static void makeViolentMap() throws Exception{
+        originalSvgSource = readFileSource("usCountiesOriginal.svg");
+        originalSvg = Jsoup.parse(originalSvgSource,"", Parser.xmlParser());
 
-        String originalSvgSourceForPropertyCrime = readFileSource("usCountiesOriginal.svg");
-        Document originalSvgPropCrime = Jsoup.parse(originalSvgSourceForPropertyCrime,"",Parser.xmlParser());
-
-        File fileOut = new File("outputMap.svg");// for violent crime
+        File fileOut = new File("violentCrimeMap.svg");// for violent crime
         PrintWriter printOutput = new PrintWriter(fileOut);
 
-        File propertyCrimeMap = new File("propertyCrimeMap.svg");// for property crime
-        PrintWriter propertyCrimeOut = new PrintWriter(propertyCrimeMap);
-
         printOutput.println(getDocHead("usCountiesOriginal.svg"));
-        propertyCrimeOut.println(getDocHead("usCountiesOriginal.svg"));
 
         Elements svgAll = originalSvg.select("svg");
-        Elements svgAllProperty = originalSvgPropCrime.select("svg");// for property crime
 
         Elements gTag = svgAll.select("g");
         String defaultStyle = gTag.get(0).attr("style");
 
-        Elements gTagP = svgAllProperty.select("g");
-        String defaultStyleP = gTagP.get(0).attr("style");
 
         Elements paths = svgAll.select("path");
         for(Element path: paths){// this adds a style attribute to all path elements that are counties
@@ -61,15 +57,8 @@ public class MakeCrime {
                 path.attr("style",defaultStyle);
             }
         }
-        Elements pathsP = svgAllProperty.select("path");// setting style for property crime map
-        for(Element path:pathsP){
-            if(!path.attr("id").equalsIgnoreCase("State_Lines") && !path.attr("id").equalsIgnoreCase("separator")){
-                path.attr("style",defaultStyleP);
-            }
-        }
 
-
-
+        int i = 0;
         for(Element path: paths){
             if(!path.attr("id").equalsIgnoreCase("State_Lines") && !path.attr("id").equalsIgnoreCase("separator")){
                 String fips = path.attr("id");
@@ -82,9 +71,47 @@ public class MakeCrime {
                     String colorCode = findColorForViolent(countyData,countyCrime,fips);
                     path.attr("style",formatStyle(colorCode));
                 }
+                i++;
+                if(i== 63){
+                    ProgressTest.progress = ProgressTest.progress + 0.01;
+                    ProgressTest.progressBar.setProgress(ProgressTest.progress);
+                    System.out.println("progress in violentCrimeMap: "+ProgressTest.getProgress());
+                    i=0;
+                }
+            }
+        }
+        ProgressTest.progress = 0.50;
+        ProgressTest.progressBar.setProgress(0.50);
+
+        printOutput.print(svgAll);
+        printOutput.close();
+    }
+
+
+    public static void makePropertyMap() throws Exception{
+
+        String originalSvgSourceForPropertyCrime = readFileSource("usCountiesOriginal.svg");
+        Document originalSvgPropCrime = Jsoup.parse(originalSvgSourceForPropertyCrime,"",Parser.xmlParser());
+
+        File propertyCrimeMap = new File("propertyCrimeMap.svg");// for property crime
+        PrintWriter propertyCrimeOut = new PrintWriter(propertyCrimeMap);
+
+        propertyCrimeOut.println(getDocHead("usCountiesOriginal.svg"));
+
+        Elements svgAllProperty = originalSvgPropCrime.select("svg");// for property crime
+
+        Elements gTagP = svgAllProperty.select("g");
+        String defaultStyleP = gTagP.get(0).attr("style");
+
+        Elements pathsP = svgAllProperty.select("path");// setting style for property crime map
+        for(Element path:pathsP){
+            if(!path.attr("id").equalsIgnoreCase("State_Lines") && !path.attr("id").equalsIgnoreCase("separator")){
+                path.attr("style",defaultStyleP);
             }
         }
 
+
+        int i=0;
         for(Element path: pathsP){
             if(!path.attr("id").equalsIgnoreCase("State_Lines") && !path.attr("id").equalsIgnoreCase("separator")){
                 String fips = path.attr("id");
@@ -97,14 +124,20 @@ public class MakeCrime {
                     String colorCode = findColorForPropertyCrime(countyData,countyCrime,fips);
                     path.attr("style",formatStyle(colorCode));
                 }
+                i++;
+                if(i==63){
+                    //progress = progress+0.01;
+                    //progressBarIn.setProgress(progress);
+                    i=0;
+                    //System.out.println("progress is: "+progress);
+                }
             }
         }
-        printOutput.print(svgAll);
         propertyCrimeOut.print(svgAllProperty);
-
-        printOutput.close();
         propertyCrimeOut.close();
 
+        ProgressTest.progress=1.0;
+        ProgressTest.progressBar.setProgress(1);
     }
 
 

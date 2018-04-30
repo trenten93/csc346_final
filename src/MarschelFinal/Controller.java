@@ -2,8 +2,8 @@ package MarschelFinal;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -38,6 +38,8 @@ public class Controller implements Initializable {
     @FXML
     Hyperlink propertyCrimeMap;
 
+    @FXML
+    public ProgressBar progressBar = ProgressTest.getProgressBar();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,6 +51,8 @@ public class Controller implements Initializable {
             MakeCrime.makeMap(1);
             mapLink.setDisable(false);
             propertyCrimeMap.setDisable(false);
+            System.out.println("controller: "+ProgressTest.getProgress());
+            progressBar.setProgress(ProgressTest.getProgress());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,6 +63,20 @@ public class Controller implements Initializable {
             run.setDisable(false);
         }else{
             run.setDisable(true);
+        }
+    }
+
+    public void zipFieldEnter(){
+        if(zipFieldValid()){
+            mainRun();
+        }
+    }
+
+    public boolean zipFieldValid(){
+        if(zipEnter.getText().length() ==5){
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -79,10 +97,8 @@ public class Controller implements Initializable {
     public void linkClick(){ // for mainCrime violent crime link
         try {
             Desktop desktop = Desktop.getDesktop();
-            File mapFile = new File("outputMap.svg");
+            File mapFile = new File("violentCrimeMap.svg");
             desktop.open(mapFile);
-            robotKeyPressToZoomAllIn();
-            robotKeyPressToZoomOut(3);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,50 +110,26 @@ public class Controller implements Initializable {
             Desktop desktop = Desktop.getDesktop();
             File mapFile = new File("propertyCrimeMap.svg");
             desktop.open(mapFile);
-            robotKeyPressToZoomAllIn();
-            robotKeyPressToZoomOut(3);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void robotKeyPressToZoomOut(int numZoomSteps){
-        try {
-            Robot robot = new Robot();
-            for(int i=0;i<numZoomSteps;i++){
-                robot.delay(100);
-                robot.keyPress(KeyEvent.VK_CONTROL);
-                robot.keyPress(KeyEvent.VK_MINUS);
-                robot.keyRelease(KeyEvent.VK_CONTROL);
-                robot.keyRelease(KeyEvent.VK_MINUS);
-            }
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void robotKeyPressToZoomAllIn(){
-        try {
-            Robot robot = new Robot();
-            for(int i=0;i<6;i++){
-                robot.delay(50);
-                robot.keyPress(KeyEvent.VK_CONTROL);
-                robot.keyPress(KeyEvent.VK_EQUALS);
-                robot.keyRelease(KeyEvent.VK_CONTROL);
-                robot.keyRelease(KeyEvent.VK_EQUALS);
-            }
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void generateMapButton(){
         generateMap.setDisable(true);
         run.setDisable(true);
         mapLink.setDisable(true);
         propertyCrimeMap.setDisable(true);
+        ProgressTest.progress = 0.0;
+        progressBar.setProgress(0.0);
         try {
-            MakeCrime.makeMap(2);
+            MakeCrime.makeViolentMap();
+            progressBar.setProgress(0.5);
+            MakeCrime.makePropertyMap();
+            progressBar.setProgress(1.0);
+
             generateMap.setDisable(false);
             run.setDisable(false);
             mapLink.setDisable(false);
@@ -145,6 +137,18 @@ public class Controller implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void updateProgress(){
+        try {
+            Robot robot = new Robot();
+            robot.delay(500);
+            progressBar.setProgress(ProgressTest.getProgress());
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
