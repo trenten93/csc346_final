@@ -25,7 +25,7 @@ All values are calculated for crimes per 1000 people. Brighter shades of red mea
 shades of red mean less crime. There were 10 color steps used in this project and for the violent crime map the steps go from 
 0 to 18+ crimes per 1000 people and the color steps every 2 additional crimes. 
 The property crime map has a range of 0 to 90+ crimes and the color steps up with every 10 
-additional crimes. All data including population was from 2016. 
+additional crimes. All data including population was from 2016
 
 The crime data was sourced from [FBI UCR](https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-6/table-6.xls/view)
 
@@ -36,7 +36,7 @@ added those to the county crime reports so the totals would include both city an
 
 * For population: [Census.gov](https://www.census.gov/data/tables/2016/demo/popest/counties-total.html)
 * For the city and county data: [simplemaps](https://simplemaps.com/data/us-cities)
-* Inspiration for this project was from [Nathan Yau's Unemployment map](https://flowingdata.com/2009/11/12/how-to-make-a-us-county-thematic-map-using-free-tools/)
+* __Inspiration for this project was from__ [Nathan Yau's Unemployment map](https://flowingdata.com/2009/11/12/how-to-make-a-us-county-thematic-map-using-free-tools/)
 
 ###### Links to my other Github Projects: 
 
