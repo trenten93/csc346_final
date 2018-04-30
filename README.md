@@ -27,7 +27,7 @@ shades of red mean less crime. There were 10 color steps used in this project an
 The property crime map has a range of 0 to 90+ crimes and the color steps up with every 10 
 additional crimes. All data including population was from 2016. 
 
-The crime data was sourced from[FBI UCR](https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-6/table-6.xls/view)
+The crime data was sourced from [FBI UCR](https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-6/table-6.xls/view)
 
 I built a program that took the city crime data and placed those into county totals and then I 
 added those to the county crime reports so the totals would include both city and county law agency reports. 
@@ -35,6 +35,9 @@ added those to the county crime reports so the totals would include both city an
 ###### Other resources used in this project:
 
 * For population: [Census.gov](https://www.census.gov/data/tables/2016/demo/popest/counties-total.html)
-
 * For the city and county data: [simplemaps](https://simplemaps.com/data/us-cities)
+
+###### Links to my other Github Projects: 
+
+* [JavaFX Weather App ](https://github.com/trenten93/csc346_hmwk05fx)
 
