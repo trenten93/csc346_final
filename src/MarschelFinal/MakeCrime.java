@@ -1,42 +1,41 @@
 package MarschelFinal;
 
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.sql.*;
-import java.util.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
+@SuppressWarnings("Duplicates")
 public class MakeCrime {
     public static ArrayList<String> colorWheel = new ArrayList<String>();
-    public static CountyCrimeData maxCrime = new CountyCrimeData();
-    public static double maxCrimeRate = Double.MIN_VALUE;
-
-    public static CountyCrimeData maxPropertyCrime = new CountyCrimeData();
-    public static double maxPropertyCrimeRate = Double.MIN_VALUE;
 
     public MakeCrime(){
         //
     }
 
 
-    public static void makeMap() throws Exception{
+    public static void makeMap(int o) throws Exception{
         populateColorWheel();
 
-//        try {
-//            File fileTest = new File("outputMap.svg");
-//            if(fileTest.exists()){
-//                return;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        if(o == 1){
+            return;
+        }
+
 
         String originalSvgSource = readFileSource("usCountiesOriginal.svg");
         Document originalSvg = Jsoup.parse(originalSvgSource,"", Parser.xmlParser());
+
+        String originalSvgSourceForPropertyCrime = readFileSource("usCountiesOriginal.svg");
+        Document originalSvgPropCrime = Jsoup.parse(originalSvgSourceForPropertyCrime,"",Parser.xmlParser());
 
         File fileOut = new File("outputMap.svg");// for violent crime
         PrintWriter printOutput = new PrintWriter(fileOut);
@@ -48,7 +47,7 @@ public class MakeCrime {
         propertyCrimeOut.println(getDocHead("usCountiesOriginal.svg"));
 
         Elements svgAll = originalSvg.select("svg");
-        Elements svgAllProperty = originalSvg.select("svg");// for property crime
+        Elements svgAllProperty = originalSvgPropCrime.select("svg");// for property crime
 
         Elements gTag = svgAll.select("g");
         String defaultStyle = gTag.get(0).attr("style");
@@ -65,7 +64,7 @@ public class MakeCrime {
         Elements pathsP = svgAllProperty.select("path");// setting style for property crime map
         for(Element path:pathsP){
             if(!path.attr("id").equalsIgnoreCase("State_Lines") && !path.attr("id").equalsIgnoreCase("separator")){
-                path.attr("style",defaultStyle);
+                path.attr("style",defaultStyleP);
             }
         }
 
@@ -79,9 +78,8 @@ public class MakeCrime {
 
                 if(countyCrime.getCountyName().equalsIgnoreCase("")){
                     path.attr("style",formatStyle("#FFFFFF"));
-                    System.out.println("null county name");
                 }else{
-                    String colorCode = findColorForPopViolent(countyData,countyCrime,fips);
+                    String colorCode = findColorForViolent(countyData,countyCrime,fips);
                     path.attr("style",formatStyle(colorCode));
                 }
             }
@@ -96,25 +94,16 @@ public class MakeCrime {
                 if(countyCrime.getCountyName().equalsIgnoreCase("")){
                     path.attr("style",formatStyle("#FFFFFF"));
                 }else{
-                    String colorCode = findColorForPopPropertyCrime(countyData,countyCrime,fips);
+                    String colorCode = findColorForPropertyCrime(countyData,countyCrime,fips);
                     path.attr("style",formatStyle(colorCode));
                 }
             }
         }
-
-
-
-
         printOutput.print(svgAll);
         propertyCrimeOut.print(svgAllProperty);
+
         printOutput.close();
         propertyCrimeOut.close();
-
-
-        System.out.println("county with max PropertyCrime rate was County: "+maxPropertyCrime.getCountyName() +
-                " state: "+maxPropertyCrime.getStateId()+" crime: "+maxPropertyCrime.getViolentCrime()+" pop: "+maxPropertyCrime.getPopulation()+
-        " CrimeRate: "+maxPropertyCrimeRate);
-
 
     }
 
@@ -136,7 +125,7 @@ public class MakeCrime {
         }
     }
 
-    public static String findColorForPopViolent(CountyDataGeneral countyData,CountyCrimeData countyCrime,String fips){// for violent crime
+    public static String findColorForViolent(CountyDataGeneral countyData,CountyCrimeData countyCrime,String fips){// for violent crime
         // determines what color to use based on the ratio of total crime to population. //per 1,000 people
         String result = "";
 
@@ -146,23 +135,23 @@ public class MakeCrime {
             double crimeRate = ((double)countyCrime.getViolentCrime()/ (double)countyData.getPopulation())*1000; // crime per 1000 people
             double crimeRateRounded = Math.round(crimeRate);
 
-            if(crimeRateRounded >= 36){
+            if(crimeRateRounded >= 18){
                 result = colorWheel.get(9);
-            }else if(crimeRateRounded >= 32){
+            }else if(crimeRateRounded >= 16){
                 result = colorWheel.get(8);
-            }else if(crimeRateRounded >= 28){
+            }else if(crimeRateRounded >= 14){
                 result = colorWheel.get(7);
-            }else if(crimeRateRounded >= 24){
-                result = colorWheel.get(6);
-            }else if(crimeRateRounded >= 20){
-                result = colorWheel.get(5);
-            }else if(crimeRateRounded >=16){
-                result = colorWheel.get(4);
             }else if(crimeRateRounded >= 12){
+                result = colorWheel.get(6);
+            }else if(crimeRateRounded >= 10){
+                result = colorWheel.get(5);
+            }else if(crimeRateRounded >=8){
+                result = colorWheel.get(4);
+            }else if(crimeRateRounded >= 6){
                 result = colorWheel.get(3);
-            }else if(crimeRateRounded >= 8){
-                result = colorWheel.get(2);
             }else if(crimeRateRounded >= 4){
+                result = colorWheel.get(2);
+            }else if(crimeRateRounded >= 2){
                 result = colorWheel.get(1);
             }else{
                 result = colorWheel.get(0);
@@ -172,34 +161,36 @@ public class MakeCrime {
         return result;
     }
 
-    public static String findColorForPopPropertyCrime(CountyDataGeneral countyData,CountyCrimeData countyCrime,String fips){// for property crime
+    public static String findColorForPropertyCrime(CountyDataGeneral countyData,CountyCrimeData countyCrime,String fips){// for property crime
         String result = "";
-
-        double crimeRateTest = 0;
-        if(countyData.getPopulation()!=0){
-            double propertyCrimeRateTest = ((double)countyCrime.getPropertyCrime()/(double)countyData.getPopulation())*1000.0;
-            crimeRateTest = Math.round(propertyCrimeRateTest);
-        }
-
-        if(crimeRateTest>maxPropertyCrimeRate){
-            maxPropertyCrimeRate = crimeRateTest;
-            maxPropertyCrime = countyCrime;
-            maxPropertyCrime.setPopulation(countyData.getPopulation());
-        }
-        System.out.printf("County: %-30s State: %-4s PropCrime: %-8d pop: %-9d fips: %-6s PropCrimeRate: %-7.0f\n",
-                countyCrime.getCountyName(),countyCrime.getStateId(),countyCrime.getPropertyCrime(),countyData.getPopulation(),fips,crimeRateTest);
-
 
         if(countyCrime.getPropertyCrime() == 0 || countyData.getPopulation() ==0){
             result = colorWheel.get(0);
         }else{
-            double crimeRate = (double)countyCrime.getPropertyCrime()/ (double)countyData.getPopulation();
-            double colorPicker = (crimeRate*1000)*0.01;
-            int finalCodeToGet = (int) Math.round(colorPicker);
-            if(finalCodeToGet > 9){
-                finalCodeToGet = 9;
+            double crimeRate = ((double)countyCrime.getPropertyCrime()/ (double)countyData.getPopulation())*1000;// property crime rate per 1000 people
+            double crimeRateRounded = Math.round(crimeRate);
+
+            if(crimeRateRounded >= 90){
+                result = colorWheel.get(9);
+            }else if(crimeRateRounded >= 80){
+                result = colorWheel.get(8);
+            }else if(crimeRateRounded >= 70){
+                result = colorWheel.get(7);
+            }else if(crimeRateRounded >= 60){
+                result = colorWheel.get(6);
+            }else if(crimeRateRounded >= 50){
+                result = colorWheel.get(5);
+            }else if(crimeRateRounded >= 40){
+                result = colorWheel.get(4);
+            }else if(crimeRateRounded >= 30){
+                result = colorWheel.get(3);
+            }else if(crimeRateRounded >= 20){
+                result = colorWheel.get(2);
+            }else if(crimeRateRounded >= 10){
+                result = colorWheel.get(1);
+            }else{
+                result = colorWheel.get(0);
             }
-            result = colorWheel.get(finalCodeToGet);
         }
         return result;
     }
@@ -340,6 +331,7 @@ public class MakeCrime {
             queryString = String.format("select * from totalCountyCrimeData where county like '%s' and state like '%s' ",countyFixed,stateAbb);
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
+                // I don't currently use many of these, But I'll leave them for future modification to support maps with arson rates and etc.
                 String county = rs.getString("county");
                 String violent_crime = rs.getString("violent_crime");
                 String murder = rs.getString("murder");

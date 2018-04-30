@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -22,8 +23,10 @@
             <TextField fx:id="zipEnter" layoutX="123.0" layoutY="55.0" onKeyReleased="#zipKeyReleased" />
             <Button fx:id="run" layoutX="330.0" layoutY="55.0" mnemonicParsing="false" onAction="#mainRun" prefHeight="25.0" prefWidth="89.0" text="Run" />
             <TextArea fx:id="output" editable="false" layoutX="14.0" layoutY="103.0" prefHeight="369.0" prefWidth="407.0" />
-            <Hyperlink fx:id="mapLink" layoutX="445.0" layoutY="269.0" onAction="#linkClick" prefHeight="37.0" prefWidth="89.0" text="Crime Map" />
+            <Hyperlink fx:id="mapLink" layoutX="445.0" layoutY="269.0" onAction="#linkClick" prefHeight="37.0" prefWidth="112.0" text="Violent Crime Map" />
             <Label layoutX="445.0" layoutY="117.0" prefHeight="121.0" prefWidth="112.0" text="Brighter shades of red are equal to a higher number of crimes per 1000 people. " wrapText="true" />
+            <Hyperlink fx:id="propertyCrimeMap" layoutX="441.0" layoutY="306.0" onAction="#propertyCrimeMapLinkClick" prefHeight="23.0" prefWidth="121.0" text="Property Crime Map" />
+            <Button fx:id="generateMap" layoutX="452.0" layoutY="401.0" mnemonicParsing="false" onAction="#generateMapButton" prefHeight="25.0" prefWidth="98.0" text="Generate Map" />
          </children>
       </Pane>
    </children>
