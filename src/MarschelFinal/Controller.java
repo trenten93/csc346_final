@@ -38,9 +38,6 @@ public class Controller implements Initializable {
     @FXML
     Hyperlink propertyCrimeMap;
 
-    @FXML
-    public ProgressBar progressBar = ProgressTest.getProgressBar();
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         mapLink.setDisable(true);
@@ -48,11 +45,9 @@ public class Controller implements Initializable {
         run.setDisable(true);
         output.setText("");
         try {
-            MakeCrime.makeMap(1);
+            MakeCrime.makeMap();
             mapLink.setDisable(false);
             propertyCrimeMap.setDisable(false);
-            System.out.println("controller: "+ProgressTest.getProgress());
-            progressBar.setProgress(ProgressTest.getProgress());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,14 +117,9 @@ public class Controller implements Initializable {
         run.setDisable(true);
         mapLink.setDisable(true);
         propertyCrimeMap.setDisable(true);
-        ProgressTest.progress = 0.0;
-        progressBar.setProgress(0.0);
         try {
             MakeCrime.makeViolentMap();
-            progressBar.setProgress(0.5);
             MakeCrime.makePropertyMap();
-            progressBar.setProgress(1.0);
-
             generateMap.setDisable(false);
             run.setDisable(false);
             mapLink.setDisable(false);
@@ -140,17 +130,6 @@ public class Controller implements Initializable {
 
     }
 
-    public void updateProgress(){
-        try {
-            Robot robot = new Robot();
-            robot.delay(500);
-            progressBar.setProgress(ProgressTest.getProgress());
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
 
 

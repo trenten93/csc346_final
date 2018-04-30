@@ -7,10 +7,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
+import sun.security.provider.MD5;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.security.MessageDigest;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -18,27 +18,49 @@ import java.util.Scanner;
 @SuppressWarnings("Duplicates")
 public class MakeCrime {
     public static ArrayList<String> colorWheel = new ArrayList<String>();
-    public static String originalSvgSource= "";
-    public static Document originalSvg = null;
-
-
     public MakeCrime(){
         //
     }
 
 
-    public static void makeMap(int o) throws Exception{
+    public static void makeMap() throws Exception{
         populateColorWheel();
-        if(o == 1){
-            ProgressTest.progressBar.setProgress(1.0);
-            return;
+        File test = new File("violentCrimeMap.svg");
+        File test2 = new File("propertyCrimeMap.svg");
+
+        if(test.exists() && test2.exists()){ // to check that the maps exist and are the correct hash value. If not make them.
+            String violentMd5 = "59162d9aecbb02e69269e98134dd3216";
+            String propertyMd5 = "5bfbdadb8bb603247799e355bc605bfc";
+            String violentMd5Generated = getMD5Checksum("violentCrimeMap.svg");
+            String propertyMd5Generated = getMD5Checksum("propertyCrimeMap.svg");
+
+            if(!violentMd5Generated.equals(violentMd5)){
+                System.out.println("The hash value for the violent crime map was incorrect regenerating map! \n");
+                makeViolentMap();
+            }
+            if(!propertyMd5Generated.equals(propertyMd5)){
+                System.out.println("The hash value for the property crime map was incorrect regenerating map! \n");
+                makePropertyMap();
+            }
+            if(violentMd5Generated.equals(violentMd5) && propertyMd5Generated.equals(propertyMd5)){
+                return;
+            }
+        }else{
+            if(!test.exists()){
+                System.out.println("violent crime map was not in root source making map now!\n");
+                makeViolentMap();
+            }
+            if(!test2.exists()){
+                System.out.println("property crime map was not in root source making map now! \n");
+                makePropertyMap();
+            }
         }
     }
 
 
     public static void makeViolentMap() throws Exception{
-        originalSvgSource = readFileSource("usCountiesOriginal.svg");
-        originalSvg = Jsoup.parse(originalSvgSource,"", Parser.xmlParser());
+        String originalSvgSource = readFileSource("usCountiesOriginal.svg");
+        Document originalSvg = Jsoup.parse(originalSvgSource,"", Parser.xmlParser());
 
         File fileOut = new File("violentCrimeMap.svg");// for violent crime
         PrintWriter printOutput = new PrintWriter(fileOut);
@@ -59,6 +81,7 @@ public class MakeCrime {
         }
 
         int i = 0;
+        int progress = 0;
         for(Element path: paths){
             if(!path.attr("id").equalsIgnoreCase("State_Lines") && !path.attr("id").equalsIgnoreCase("separator")){
                 String fips = path.attr("id");
@@ -72,17 +95,16 @@ public class MakeCrime {
                     path.attr("style",formatStyle(colorCode));
                 }
                 i++;
-                if(i== 63){
-                    ProgressTest.progress = ProgressTest.progress + 0.01;
-                    ProgressTest.progressBar.setProgress(ProgressTest.progress);
-                    System.out.println("progress in violentCrimeMap: "+ProgressTest.getProgress());
+                if(i==32){
                     i=0;
+                    progress = progress+1;
+                    if(progress >= 98){
+                        progress=100;
+                    }
+                    System.out.printf("progress in violent map: %d%%\n",progress);
                 }
             }
         }
-        ProgressTest.progress = 0.50;
-        ProgressTest.progressBar.setProgress(0.50);
-
         printOutput.print(svgAll);
         printOutput.close();
     }
@@ -112,6 +134,7 @@ public class MakeCrime {
 
 
         int i=0;
+        int progress = 0;
         for(Element path: pathsP){
             if(!path.attr("id").equalsIgnoreCase("State_Lines") && !path.attr("id").equalsIgnoreCase("separator")){
                 String fips = path.attr("id");
@@ -125,19 +148,18 @@ public class MakeCrime {
                     path.attr("style",formatStyle(colorCode));
                 }
                 i++;
-                if(i==63){
-                    //progress = progress+0.01;
-                    //progressBarIn.setProgress(progress);
+                if(i==32){
                     i=0;
-                    //System.out.println("progress is: "+progress);
+                    progress = progress+1;
+                    if(progress >= 98){
+                        progress = 100;
+                    }
+                    System.out.printf("progress in Property map: %d%%",progress);
                 }
             }
         }
         propertyCrimeOut.print(svgAllProperty);
         propertyCrimeOut.close();
-
-        ProgressTest.progress=1.0;
-        ProgressTest.progressBar.setProgress(1);
     }
 
 
@@ -493,6 +515,35 @@ public class MakeCrime {
             System.out.println("It did not open");
             return null;
         }
+    }
+
+
+    public static byte[] createChecksum(String filename) throws Exception {
+        InputStream fis =  new FileInputStream(filename);
+
+        byte[] buffer = new byte[1024];
+        MessageDigest complete = MessageDigest.getInstance("MD5");
+        int numRead;
+
+        do {
+            numRead = fis.read(buffer);
+            if (numRead > 0) {
+                complete.update(buffer, 0, numRead);
+            }
+        } while (numRead != -1);
+
+        fis.close();
+        return complete.digest();
+    }
+
+    public static String getMD5Checksum(String filename) throws Exception {
+        byte[] b = createChecksum(filename);
+        String result = "";
+
+        for (int i=0; i < b.length; i++) {
+            result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
+        }
+        return result;
     }
 
 }

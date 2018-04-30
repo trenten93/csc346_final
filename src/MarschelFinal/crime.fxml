@@ -27,7 +27,6 @@
             <Label layoutX="445.0" layoutY="117.0" prefHeight="121.0" prefWidth="112.0" text="Brighter shades of red are equal to a higher number of crimes per 1000 people. " wrapText="true" />
             <Hyperlink fx:id="propertyCrimeMap" layoutX="441.0" layoutY="306.0" onAction="#propertyCrimeMapLinkClick" prefHeight="23.0" prefWidth="121.0" text="Property Crime Map" />
             <Button fx:id="generateMap" layoutX="453.0" layoutY="361.0" mnemonicParsing="false" onAction="#generateMapButton" prefHeight="25.0" prefWidth="98.0" text="Generate Map" />
-            <ProgressBar fx:id="progressBar" layoutX="14.0" layoutY="481.0" prefHeight="18.0" prefWidth="407.0" progress="0.0" />
          </children>
       </Pane>
    </children>
