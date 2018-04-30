@@ -12,11 +12,11 @@ I find the crime rate for each county and find the color to shade the county and
  
  
  ##### Violent Crime Map: 
- ![alt text](https://i.imgur.com/fIUdUqE.jpg "Violent Crime Map")
+ ![alt text](https://i.imgur.com/SjgALFJ.jpg "Violent Crime Map")
  
  
  ##### Property Crime Map:
- ![alt text](https://i.imgur.com/YsGyOug.jpg "Property Crime Map")
+ ![alt text](https://i.imgur.com/HO5elb6.jpg "Property Crime Map")
 
 
 

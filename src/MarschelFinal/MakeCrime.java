@@ -29,8 +29,8 @@ public class MakeCrime {
         File test2 = new File("propertyCrimeMap.svg");
 
         if(test.exists() && test2.exists()){ // to check that the maps exist and are the correct hash value. If not make them.
-            String violentMd5 = "59162d9aecbb02e69269e98134dd3216";
-            String propertyMd5 = "5bfbdadb8bb603247799e355bc605bfc";
+            String violentMd5 = "b37f3dbc340ed1b4fdf57330c1e8ca6a";
+            String propertyMd5 = "d7c697672b8122245c90cbd1e00b7d08";
             String violentMd5Generated = getMD5Checksum("violentCrimeMap.svg");
             String propertyMd5Generated = getMD5Checksum("propertyCrimeMap.svg");
 
@@ -154,7 +154,7 @@ public class MakeCrime {
                     if(progress >= 98){
                         progress = 100;
                     }
-                    System.out.printf("progress in Property map: %d%%",progress);
+                    System.out.printf("progress in Property map: %d%%\n",progress);
                 }
             }
         }
