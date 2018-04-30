@@ -36,6 +36,8 @@ added those to the county crime reports so the totals would include both city an
 
 * For population: [Census.gov](https://www.census.gov/data/tables/2016/demo/popest/counties-total.html)
 * For the city and county data: [simplemaps](https://simplemaps.com/data/us-cities)
+* Inspiration for this project was from [Nathan Yau](""https://flowingdata.com/2009/11/12/how-to-make-a-us-county-thematic-map-using-free-tools/")
+
 
 ###### Links to my other Github Projects: 
 
